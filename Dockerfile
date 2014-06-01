@@ -22,7 +22,10 @@ RUN \
   sed -i 's/^\(bind .*\)$/# \1/' /etc/redis/redis.conf && \
   sed -i 's/^\(daemonize .*\)$/# \1/' /etc/redis/redis.conf && \
   sed -i 's/^\(dir .*\)$/# \1\ndir \/data/' /etc/redis/redis.conf && \
-  sed -i 's/^\(logfile .*\)$/# \1/' /etc/redis/redis.conf
+  sed -i 's/^\(logfile .*\)$/# \1/' /etc/redis/redis.conf && \
+  FREE=`free -m | grep Mem | awk '{print $2 * 0.9}'` && \
+  sed -i "s/^# maxmemory <bytes>/maxmemory `echo $FREE`mb/" /etc/redis/redis.conf&& \
+  sed -i 's/^\(# maxmemory-policy .*\)$/maxmemory-policy volatile-lru/' /etc/redis/redis.conf
 
 # Define mountable directories.
 VOLUME ["/data"]
